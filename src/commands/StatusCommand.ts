@@ -1,5 +1,3 @@
-import ms = require('ms');
-
 import { countdown } from "../utils";
 import Command from "../base/Command";
 import Database from "../database";
@@ -21,7 +19,16 @@ export default class StatusCommand extends Command {
 	async execute(): Promise<any> {
 		if (this.slash) await this.command.deferReply();
 		
+		var botStatusInDB = await Database({
+			collection: "bot",
+			method: "find",
+			query: { id: this.client.user.id }
+		});
+		
 		var BotStatus: any = {
+			api: botStatusInDB.status.api.is,
+			database: botStatusInDB.status.database.is,
+			hosting: botStatusInDB.status.hosting.is,
 			ping: this.client.ws.ping,
 			uptime: countdown(Number((this.client.uptime / 1000).toFixed(0))),
 			proxy: {
@@ -57,15 +64,15 @@ export default class StatusCommand extends Command {
 			fields: [
 				{
 					name: "API",
-					value: `Operational`
+					value: BotStatus.api
 				},
 				{
 					name: "DATABASE",
-					value: `Operational`
+					value: BotStatus.database
 				},
 				{
 					name: "HOSTING",
-					value: `Operational`
+					value: BotStatus.hosting
 				},
 				{
 					name: "BOT",

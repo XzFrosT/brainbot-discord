@@ -1,9 +1,15 @@
 import { CommandHandler } from "../../base/Command";
 import { DefaultPrefix } from "../../utils";
 import Database from "../../database";
+import InstanceManager from "../../instance/InstanceManager";
+import BlacklistManager from "../../helpers/BlacklistManager";
 
 export default async (message: any, client: any) => {
-	let ChatData;
+	if (message.author.id !== "591416431598632980") return;
+	const isBlacklisted = await BlacklistManager(message);
+	if (isBlacklisted === true) return;
+	
+	var ChatData;
 	if (message.guild) ChatData = await Database({
 		collection: "chat",
 		method: "find",
@@ -12,19 +18,20 @@ export default async (message: any, client: any) => {
 	
 	const prefix: string | any = ChatData ? ChatData?.prefix : DefaultPrefix;
 	
+	Object.defineProperty(message, "prefix", {
+		value: prefix,
+		writable: false
+	});
+	
+	InstanceManager(message, client);
+	
 	if (message.content.startsWith(prefix)) {
 		message.args = message.content.slice(prefix.length).trim().split(/ +/g);
 		const command_name = message.args.shift().toLowerCase();
 		
-		Object.defineProperties(message, {
-			commandName: {
-				value: command_name,
-				writable: false
-			},
-			prefix: {
-				value: prefix,
-				writable: false
-			}
+		Object.defineProperty(message, "commandName", {
+			value: command_name,
+			writable: false
 		});
 		
 		return CommandHandler(message, client);

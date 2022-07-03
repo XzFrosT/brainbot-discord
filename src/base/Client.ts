@@ -1,32 +1,71 @@
 import * as Discord from 'discord.js';
 import * as fs from 'fs';
 
+import { BotToken } from "../utils/config";
+
 export class Client extends Discord.Client {
-	public commands: any;
+	public commands: Discord.Collection<string | number, any>;
+	public sessions: Discord.Collection<string | number, any>;
 	
 	constructor() {
 		super({
 			makeCache: Discord.Options.cacheWithLimits({
-				MessageManager: 5
+					/**
+					 * Unsupported manager to be limited according to discord.js.org:
+					 * - GuildManager
+					 * - ChannelManager
+					 * - GuildChannelManager
+					 * - RoleManager
+					 * - PermissionOverwriteManager
+					 */
+				MessageManager: {
+					maxSize: 5
+				},
+				UserManager: {
+					maxSize: 5
+				}
 			}),
 			partials: ["CHANNEL", "MESSAGE"],
 			intents: ["DIRECT_MESSAGES", "GUILDS", "GUILD_MESSAGES"],
 			sweepers: {
-				messages: {
-					interval: 60000,
+				emojis: {
+					interval: 60,
+					filter: () => {return null}
+				},
+				invites: {
+					interval: 60,
 					lifetime: 60
+				},
+				guildMembers: {
+					interval: 60,
+					filter: () => {return null}
+				},
+				messages: {
+					interval: 60,
+					lifetime: 60
+				},
+				reactions: {
+					interval: 60,
+					filter: () => {return null}
+				},
+				threads: {
+					interval: 60,
+					lifetime: 60
+				},
+				users: {
+					interval: 60,
+					filter: () => {return null}
 				}
 			}
 		});
 		
 		this.commands = new Discord.Collection();
+		this.sessions = new Discord.Collection();
 	}
 	
 	launch(): void {
-		const TOKEN = process.env.NODE_ENV === "production" ? process.env.PROD_TOKEN : process.env.DEV_TOKEN
-		
 		this.prepare();
-		this.login(TOKEN);
+		this.login(BotToken);
 	}
 	
 	prepare(): void {
