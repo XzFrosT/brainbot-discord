@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/xzfrost/brainbot.git"
+    "url": "git+https://github.com/xzfrost/brainbot-discord.git"
   },
   "keywords": [
     "DiscordBot"
@@ -19,9 +19,9 @@
   "author": "Ihsan",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/xzfrost/brainbot/issues"
+    "url": "https://github.com/xzfrost/brainbot-discord/issues"
   },
-  "homepage": "https://github.com/xzfrost/brainbot#readme",
+  "homepage": "https://github.com/xzfrost/brainbot-discord#readme",
   "devDependencies": {
     "@types/md5": "^2.3.2",
     "@types/node": "^16.11.41",
@@ -33,8 +33,8 @@
   },
   "dependencies": {
     "@discordjs/rest": "^0.5.0",
-    "discord-api-types": "^0.35.0",
-    "discord.js": "^13.8.1",
+    "discord-api-types": "^0.36.2",
+    "discord.js": "^13.9.0",
     "dotenv": "^16.0.1",
     "md5": "^2.3.0",
     "mongoose": "^6.3.3",
